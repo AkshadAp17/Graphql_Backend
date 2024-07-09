@@ -15,15 +15,14 @@ function createApolloServer() {
     return __awaiter(this, void 0, void 0, function* () {
         const gqlserv = new server_1.ApolloServer({
             typeDefs: `
-    
-      type Query {
-         ${user_1.User.queries}
-      }
-
-      type Mutation {
-         ${user_1.User.mutation}
-      }
-  `,
+            ${user_1.User.typedef}
+            type Query {
+                ${user_1.User.queries}
+            }
+            type Mutation {
+                ${user_1.User.mutation}
+            }
+        `,
             resolvers: {
                 Query: Object.assign({}, user_1.User.resolver.queries),
                 Mutation: Object.assign({}, user_1.User.resolver.mutation),

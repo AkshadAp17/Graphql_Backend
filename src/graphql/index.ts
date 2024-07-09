@@ -3,16 +3,15 @@ import { User } from "./user";
 
 async function createApolloServer() {
     const gqlserv = new ApolloServer({
-      typeDefs: `
-    
-      type Query {
-         ${User.queries}
-      }
-
-      type Mutation {
-         ${User.mutation}
-      }
-  `,
+        typeDefs: `
+            ${User.typedef}
+            type Query {
+                ${User.queries}
+            }
+            type Mutation {
+                ${User.mutation}
+            }
+        `,
         resolvers: {
             Query: {
                 ...User.resolver.queries,

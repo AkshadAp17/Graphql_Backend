@@ -17,11 +17,21 @@ const queries = {
         console.log(token);
         return token;
     }),
+    getcurrentloggeduser: (_, parameters, context) => __awaiter(void 0, void 0, void 0, function* () {
+        var _a;
+        if (context && context.user) {
+            const id = context.user.id;
+            const user = yield user_1.UserService.getUserById(id);
+            const profileImageUrl = (_a = user === null || user === void 0 ? void 0 : user.profileImageUrl) !== null && _a !== void 0 ? _a : 'null';
+            return Object.assign(Object.assign({}, user), { profileImageUrl });
+        }
+        throw new Error("I don't know who you are");
+    }),
 };
 const mutation = {
-    createUser: (_1, _a) => __awaiter(void 0, [_1, _a], void 0, function* (_, { input }) {
-        const result = yield user_1.UserService.createUser(input);
-        return result.id;
+    createUser: (_, payload) => __awaiter(void 0, void 0, void 0, function* () {
+        const res = yield user_1.UserService.createUser(payload);
+        return res.id;
     }),
 };
 exports.resolver = { queries, mutation };

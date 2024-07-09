@@ -7,5 +7,6 @@ exports.typedef = `#graphql
     firstName: String!
     lastName: String!
     email: String!
+    profileImageUrl: String!
   }
 `;

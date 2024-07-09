@@ -9,6 +9,8 @@ export interface CreateUserPayload {
     password: string;
 }
 
+const SECRET_KEY = 'your_secret_key'; // Ensure this is a strong, secret key
+
 export class UserService {
     public static generateHash(salt: string, password: string): string {
         return createHmac('sha256', salt).update(password).digest('hex');
@@ -52,12 +54,28 @@ export class UserService {
                 throw new Error('Invalid credentials');
             }
 
-            const token = jwt.sign({ userId: user.id }, 'your_secret_key', { expiresIn: '1h' });
+            const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, { expiresIn: '1h' });
 
             return token;
         } catch (error) {
             console.error('Error getting user token:', error);
             throw new Error('Unable to get user token');
+        }
+    }
+
+    public static decodeJWTToken(token: string) {
+        return jwt.verify(token, SECRET_KEY);
+    }
+
+    public static async getUserById(id: string) {
+        try {
+            const user = await prismaClient.user.findUnique({
+                where: { id },
+            });
+            return user;
+        } catch (error) {
+            console.error('Error getting user by ID:', error);
+            throw new Error('Unable to get user by ID');
         }
     }
 }

@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const express4_1 = require("@apollo/server/express4");
 const graphql_1 = __importDefault(require("./graphql"));
+const user_1 = require("./services/user");
 function init() {
     return __awaiter(this, void 0, void 0, function* () {
         const app = (0, express_1.default)();
@@ -23,7 +24,23 @@ function init() {
         app.get("/", (req, res) => {
             res.json({ message: "Server is up and running" });
         });
-        app.use("/graphql", (0, express4_1.expressMiddleware)(yield (0, graphql_1.default)()));
+        app.use("/graphql", (0, express4_1.expressMiddleware)(yield (0, graphql_1.default)(), {
+            context: (_a) => __awaiter(this, [_a], void 0, function* ({ req }) {
+                const token = req.headers['token'];
+                console.log("Token from header:", token); // Log token
+                if (token) {
+                    try {
+                        const user = user_1.UserService.decodeJWTToken(token);
+                        console.log("Decoded user from token:", user); // Log user
+                        return { user };
+                    }
+                    catch (error) {
+                        console.error('Invalid token:', error);
+                    }
+                }
+                return {};
+            }),
+        }));
         app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
     });
 }
